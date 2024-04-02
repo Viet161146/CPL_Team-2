@@ -10,9 +10,11 @@ const Header = () => {
         backgroundColor: "#fff",
       }}
     >
-      <div className="col-md-9" style={{paddingLeft:'12%', paddingTop:'10px'}}>
+      <div
+        className="col-md-9"
+        style={{ paddingLeft: "12%", paddingTop: "10px" }}
+      >
         <a
-        
           href="/"
           style={{
             color: "#5cb85c",
@@ -27,7 +29,7 @@ const Header = () => {
         <ul style={{ display: "flex", listStyleType: "none" }}>
           <li style={{ paddingTop: "10px", paddingRight: "20px" }}>
             <a
-              href="/home"
+              href="/articles"
               style={{
                 color: "rgba(0, 0, 0, 0.3)",
                 textDecoration: "none",
@@ -37,7 +39,6 @@ const Header = () => {
             </a>
           </li>
           <li style={{ paddingTop: "10px", paddingRight: "20px" }}>
-
             <a
               href=""
               style={{
@@ -49,7 +50,6 @@ const Header = () => {
             </a>
           </li>
           <li style={{ paddingTop: "10px", paddingRight: "20px" }}>
-
             <a
               href=""
               style={{
@@ -58,6 +58,17 @@ const Header = () => {
               }}
             >
               Sign up
+            </a>
+          </li>
+          <li style={{ paddingTop: "10px", paddingRight: "20px" }}>
+            <a
+              href="/editor"
+              style={{
+                color: "rgba(0, 0, 0, 0.3)",
+                textDecoration: "none",
+              }}
+            >
+              New Aricles
             </a>
           </li>
         </ul>

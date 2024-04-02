@@ -3,6 +3,7 @@ import "./App.css";
 import Header from "./Container/Header";
 import Home from "./Container/Home";
 import ArticlesDetails from "./Container/ArticlesDetails";
+import AddArticles from "./Container/AddArticles";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<Home />} />
           <Route path="/articles/:slug" element={<ArticlesDetails />} />
+          <Route path="/editor" element={<AddArticles/>}/>
         </Routes>
       </Router>
     </div>
