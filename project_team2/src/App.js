@@ -4,6 +4,7 @@ import Header from "./Container/Header";
 import Home from "./Container/Home";
 import ArticlesDetails from "./Container/ArticlesDetails";
 import AddArticles from "./Container/AddArticles";
+import ProfileDetails from "./Container/ProfileDetails";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route path="/articles" element={<Home />} />
           <Route path="/articles/:slug" element={<ArticlesDetails />} />
           <Route path="/editor" element={<AddArticles/>}/>
+          <Route path="/profile/:username" element={<ProfileDetails/>}/>
+
         </Routes>
       </Router>
     </div>

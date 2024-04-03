@@ -62,6 +62,9 @@ const Home = () => {
     nav(`/articles/${slug}`);
   };
 
+  const handleClickProfile=(username)=>{
+    nav(`profile/${username}`)
+  }
   // Filter và cập nhật dữ liệu dựa trên tag đã chọn
   function handlePopularTags(tag) {
     setSelectedTag(tag); // Cập nhật tag được chọn
@@ -168,7 +171,7 @@ const Home = () => {
                           <div className="row">
                             <div className="col-md-9">
                               <span className="author-name">
-                                <span style={{ color: "#5cb85c" }}>
+                                <span style={{ color: "#5cb85c", cursor:"pointer"}}  onClick={()=>handleClickProfile(article.author.username)}>
                                   {article.author.username}
                                 </span>
 

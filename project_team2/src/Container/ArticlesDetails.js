@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import { IoMdAddCircle } from "react-icons/io";
 
 const ArticlesDetails = () => {
   const [articlesDetails, setArticlesDetails] = useState({});
   const { slug } = useParams();
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchArticlesDetails = async () => {
@@ -25,6 +27,10 @@ const ArticlesDetails = () => {
 
     fetchArticlesDetails();
   }, [slug]);
+
+  const handleClickProfile = (username) => {
+    nav(`/profile/${username}`); // Chuyển hướng sang trang profile/username
+  };
 
   return (
     <div className="detail">
@@ -56,7 +62,8 @@ const ArticlesDetails = () => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
               className="author-name"
-              style={{ color: "#fff", fontSize: "70%", margin: "0" }}
+              style={{ color: "#fff", fontSize: "70%", margin: "0", cursor:'pointer'}}
+              onClick={() => handleClickProfile(articlesDetails.author.username)}
             >
               {articlesDetails.author?.username}
             </span>
@@ -66,7 +73,20 @@ const ArticlesDetails = () => {
             >
               {moment(articlesDetails.createdAt).format("MMMM D, YYYY")}
             </p>
+
           </div>
+          <button
+            style={{
+              fontSize:'14px',
+              color:'#999999',
+              backgroundColor:'rgba(0, 0, 0, 0)',
+              border:'solid 1px #999999',
+              borderRadius:'5px'
+            }}
+          >
+            <IoMdAddCircle />
+            &nbsp; Follow {articlesDetails.author.username}
+          </button>
         </div>
       </div>
       <br />
