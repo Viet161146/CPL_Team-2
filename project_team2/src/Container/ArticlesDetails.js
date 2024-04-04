@@ -85,7 +85,7 @@ const ArticlesDetails = () => {
             }}
           >
             <IoMdAddCircle />
-            &nbsp; Follow {articlesDetails.author.username}
+            &nbsp; Follow {articlesDetails.author?.username}
           </button>
         </div>
       </div>

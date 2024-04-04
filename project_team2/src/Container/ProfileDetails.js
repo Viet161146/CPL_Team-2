@@ -92,7 +92,7 @@ const DetailsProfile = () => {
           </button>
       </div>
       <br />
-      <div className="container" style={{ width: "80%" }}>
+      <div className="container" style={{ width: "70%" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <a
             href=""

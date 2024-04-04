@@ -153,6 +153,7 @@ const Home = () => {
                           </>
                         )}
                       </div>
+                      <br />
                     </li>
                   </ul>
                 </div>
@@ -171,9 +172,9 @@ const Home = () => {
                           <div className="row">
                             <div className="col-md-9">
                               <span className="author-name">
-                                <span style={{ color: "#5cb85c", cursor:"pointer"}}  onClick={()=>handleClickProfile(article.author.username)}>
+                                <span style={{ color: "#5cb85c", cursor:"pointer"}}  onClick={()=>handleClickProfile(article.author?.username)}>
                                   {article.author.username}
-                                </span>
+                                </span> 
 
                                 <br />
                                 <span
