@@ -3,9 +3,12 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { IoMdAddCircle } from "react-icons/io";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const ArticlesDetails = () => {
   const [articlesDetails, setArticlesDetails] = useState({});
+  const [comments, setComments] = useState([]);
+
   const { slug } = useParams();
   const nav = useNavigate();
 
@@ -26,6 +29,25 @@ const ArticlesDetails = () => {
     };
 
     fetchArticlesDetails();
+  }, [slug]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.realworld.io/api/articles/${slug}/comments`
+        );
+        if (response.data && Array.isArray(response.data.comments)) {
+          setComments(response.data.comments);
+        } else {
+          console.error("Invalid response data");
+        }
+      } catch (error) {
+        console.error("Fetch comments error", error);
+      }
+    };
+
+    fetchComments();
   }, [slug]);
 
   const handleClickProfile = (username) => {
@@ -62,8 +84,15 @@ const ArticlesDetails = () => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
               className="author-name"
-              style={{ color: "#fff", fontSize: "70%", margin: "0", cursor:'pointer'}}
-              onClick={() => handleClickProfile(articlesDetails.author.username)}
+              style={{
+                color: "#fff",
+                fontSize: "70%",
+                margin: "0",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                handleClickProfile(articlesDetails.author.username)
+              }
             >
               {articlesDetails.author?.username}
             </span>
@@ -73,15 +102,14 @@ const ArticlesDetails = () => {
             >
               {moment(articlesDetails.createdAt).format("MMMM D, YYYY")}
             </p>
-
           </div>
           <button
             style={{
-              fontSize:'14px',
-              color:'#999999',
-              backgroundColor:'rgba(0, 0, 0, 0)',
-              border:'solid 1px #999999',
-              borderRadius:'5px'
+              fontSize: "14px",
+              color: "#999999",
+              backgroundColor: "rgba(0, 0, 0, 0)",
+              border: "solid 1px #999999",
+              borderRadius: "5px",
             }}
           >
             <IoMdAddCircle />
@@ -118,6 +146,109 @@ const ArticlesDetails = () => {
               </li>
             ))}
         </ul>
+      </div>
+      <hr />
+      <div className="col-xs-12 col-md-6 offset-md-3">
+        <div className="comment-form" style={{ border: "1px solid #e5e5e5" }}>
+          <textarea
+            name="comment"
+            className="form-control"
+            placeholder="Write a comment..."
+            rows={3}
+          ></textarea>
+          <div
+            className="comment-footer"
+            style={{
+              backgroundColor: "#f5f5f5",
+              display: "flex",
+              alignItems: "center",
+              padding: "12px 20px ",
+            }}
+          >
+            <img
+              src="https://api.realworld.io/images/smiley-cyrus.jpeg"
+              className="comment-author-img"
+              alt="team2 avatar"
+              style={{ borderRadius: "30px", width: "30px", height: "30px" }}
+            />
+            <button
+              style={{
+                backgroundColor: "#5CB85C",
+                color: "#fff",
+                border: "none",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                marginLeft: "auto",
+              }}
+            >
+              Post Comment
+            </button>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div className="col-xs-12 col-md-6 offset-md-3">
+        {comments.map((cmt) => (
+          <div
+            className="comment-form"
+            style={{ border: "1px solid #e5e5e5", margin: "10px 0 20px" }}
+            key={cmt.id}
+          >
+            <div
+              name="comment"
+              className="form-control"
+              placeholder="Write a comment..."
+              rows={3}
+            >
+              {cmt.body}
+            </div>
+            <div
+              className="comment-footer"
+              style={{
+                backgroundColor: "#f5f5f5",
+                display: "flex",
+                alignItems: "center",
+                padding: "12px 20px ",
+                fontSize: "12px",
+              }}
+            >
+              <img
+                src={cmt.author.image}
+                className="comment-author-img"
+                alt="team2 avatar"
+                style={{
+                  borderRadius: "30px",
+                  width: "30px",
+                  height: "30px",
+                  marginRight: "10px",
+                }}
+              />
+              <span
+                style={{
+                  color: "#5cb85c",
+                  cursor: "pointer",
+                  marginRight: "10px",
+                }}
+                onClick={() => handleClickProfile(cmt.author.username)}
+              >
+                {cmt.author.username}
+              </span>
+              <span>{cmt.createdAt}</span>
+              <button
+                style={{
+                  backgroundColor: "#5CB85C",
+                  color: "#fff",
+                  border: "none",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  marginLeft: "auto",
+                }}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

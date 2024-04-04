@@ -182,6 +182,7 @@ const DetailsProfile = () => {
           ))}
         </div>
       </div>
+      
     </div>
   );
 };

@@ -11,7 +11,6 @@ const Home = () => {
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null); // State lưu trữ tag được chọn
   const [globalFeedData, setGlobalFeedData] = useState([]); // Biến tạm thời lưu trữ dữ liệu global feed
-  const [liked, setLiked] = useState(false);
 
   const nav = useNavigate();
 
@@ -80,34 +79,6 @@ const Home = () => {
     setArticles(globalFeedData); // Reset lại danh sách bài viết về ban đầu
   }
 
-  const handleLike = () => {
-    setLiked(!liked);
-    // Điều chỉnh số lượt thích ở cả hai mảng articles và globalFeedData
-    const updatedArticles = articles.map((article) => {
-      if (article.slug === article.slug) {
-        return {
-          ...article,
-          favoritesCount: liked
-            ? article.favoritesCount - 1
-            : article.favoritesCount + 1,
-        };
-      }
-      return article;
-    });
-    setArticles(updatedArticles);
-    const updatedGlobalFeed = globalFeedData.map((article) => {
-      if (article.slug === article.slug) {
-        return {
-          ...article,
-          favoritesCount: liked
-            ? article.favoritesCount - 1
-            : article.favoritesCount + 1,
-        };
-      }
-      return article;
-    });
-    setGlobalFeedData(updatedGlobalFeed);
-  };
 
   return (
     <div className={style.home}>
@@ -196,7 +167,6 @@ const Home = () => {
                                   display: "flex",
                                   alignItems: "center",
                                 }}
-                                onClick={() => handleLike(article.slug)}
                               >
                                 <FontAwesomeIcon icon={faHeart} />
                                 <span

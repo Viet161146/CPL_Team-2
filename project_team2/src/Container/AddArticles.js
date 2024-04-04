@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 // Khai báo một hằng số để lưu trữ token
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMTk5NTcyMywiZXhwIjoxNzE3MTc5NzIzfQ.36ghfPyzEbXK48ltssZNV7SaR9CnCU7PA2-o5wab6oQ";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMTk5NTcyMywiZXhwIjoxNzE3MTc5NzIzfQ.36ghfPyzEbXK48ltssZNV7SaR9CnCU7PA2-o5wab6oQ";
 
 function AddArticles({ onArticleAdded }) {
   const [articleTitle, setArticleTitle] = useState("");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
-
+  const nav = useNavigate();
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
@@ -19,18 +20,21 @@ function AddArticles({ onArticleAdded }) {
             title: articleTitle,
             description: description,
             body: body,
-            tagList: tags.split(",").map((tag) => tag.trim())
-          }
+            tagList: tags.split(",").map((tag) => tag.trim()),
+          },
         },
         {
           headers: {
-            Authorization: `Token ${token}`
-          }
+            Authorization: `Token ${token}`,
+          },
         }
       );
-  
+
       console.log("Article submitted successfully:", response.data.article);
-  
+
+      // Chuyển hướng đến trang / sau khi bài viết được thêm thành công
+      nav("/");
+
       // Gọi hàm callback để cập nhật danh sách bài viết trên trang Home
       if (onArticleAdded) {
         onArticleAdded();
@@ -39,7 +43,6 @@ function AddArticles({ onArticleAdded }) {
       console.error("Error submitting article:", error);
     }
   };
-  
   return (
     <form>
       <fieldset className="container" style={{ width: "50%" }}>
