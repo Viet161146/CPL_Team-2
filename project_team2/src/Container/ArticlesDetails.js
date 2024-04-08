@@ -4,19 +4,30 @@ import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { IoMdAddCircle } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+
 const ArticlesDetails = () => {
   const [articlesDetails, setArticlesDetails] = useState({});
   const [comments, setComments] = useState([]);
-
   const { slug } = useParams();
   const nav = useNavigate();
+
+  // Fix cứng token vào đây
+  const userToken =
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA";
+
+  const currentUser = JSON.parse(atob(userToken.split(".")[1])).user; // Decoding JWT token to get user info
 
   useEffect(() => {
     const fetchArticlesDetails = async () => {
       try {
         const response = await axios.get(
-          `https://api.realworld.io/api/articles/${slug}`
+          `https://api.realworld.io/api/articles/${slug}`,
+          {
+            headers: {
+              Authorization: userToken,
+            },
+          }
         );
         if (response.data && response.data.article) {
           setArticlesDetails(response.data.article);
@@ -29,13 +40,18 @@ const ArticlesDetails = () => {
     };
 
     fetchArticlesDetails();
-  }, [slug]);
+  }, [slug, userToken]);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `https://api.realworld.io/api/articles/${slug}/comments`
+          `https://api.realworld.io/api/articles/${slug}/comments`,
+          {
+            headers: {
+              Authorization: userToken,
+            },
+          }
         );
         if (response.data && Array.isArray(response.data.comments)) {
           setComments(response.data.comments);
@@ -48,10 +64,29 @@ const ArticlesDetails = () => {
     };
 
     fetchComments();
-  }, [slug]);
+  }, [slug, userToken]);
 
   const handleClickProfile = (username) => {
     nav(`/profile/${username}`); // Chuyển hướng sang trang profile/username
+  };
+
+  const handleEditArticle = () => {
+    // Chuyển hướng sang trang chỉnh sửa bài viết
+    nav(`/editor/${slug}`);
+  };
+
+  const handleDeleteArticle = async () => {
+    try {
+      await axios.delete(`https://api.realworld.io/api/articles/${slug}`, {
+        headers: {
+          Authorization: userToken,
+        },
+      });
+      // Redirect to home page or another appropriate page after successful deletion
+      nav("/");
+    } catch (error) {
+      console.error("Delete article error", error);
+    }
   };
 
   return (
@@ -77,11 +112,17 @@ const ArticlesDetails = () => {
           style={{ display: "flex", alignItems: "center", marginLeft: "10%" }}
         >
           <img
-            style={{ borderRadius: "50%", marginRight: "5px" }}
+            style={{ borderRadius: "50%", marginRight: "5px", width: "32px" }}
             src={articlesDetails.author?.image}
             alt="avt"
           />
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              paddingRight: "20px",
+            }}
+          >
             <span
               className="author-name"
               style={{
@@ -103,18 +144,65 @@ const ArticlesDetails = () => {
               {moment(articlesDetails.createdAt).format("MMMM D, YYYY")}
             </p>
           </div>
-          <button
-            style={{
-              fontSize: "14px",
-              color: "#999999",
-              backgroundColor: "rgba(0, 0, 0, 0)",
-              border: "solid 1px #999999",
-              borderRadius: "5px",
-            }}
-          >
-            <IoMdAddCircle />
-            &nbsp; Follow {articlesDetails.author?.username}
-          </button>
+          {userToken ? (
+            <>
+              {articlesDetails.author?.username === "team2" ? (
+                <>
+                  <button
+                    onClick={handleEditArticle}
+                    style={{
+                      fontSize: "14px",
+                      color: "#999999",
+                      backgroundColor: "rgba(0, 0, 0, 0)",
+                      border: "solid 1px #999999",
+                      borderRadius: "5px",
+                      marginRight: "5px",
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Edit Article
+                  </button>
+                  <button
+                    onClick={handleDeleteArticle}
+                    style={{
+                      fontSize: "14px",
+                      color: "#b85c5c",
+                      backgroundColor: "rgba(0, 0, 0, 0)",
+                      border: "solid 1px #999999",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete Article
+                  </button>
+                </>
+              ) : (
+                <button
+                  style={{
+                    fontSize: "14px",
+                    color: "#999999",
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    border: "solid 1px #999999",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <IoMdAddCircle />
+                  &nbsp; Follow {articlesDetails.author?.username}
+                </button>
+              )}
+            </>
+          ) : (
+            <button
+              style={{
+                fontSize: "14px",
+                color: "#999999",
+                backgroundColor: "rgba(0, 0, 0, 0)",
+                border: "solid 1px #999999",
+                borderRadius: "5px",
+              }}
+            >
+              <IoMdAddCircle />
+              &nbsp; Follow {articlesDetails.author?.username}
+            </button>
+          )}
         </div>
       </div>
       <br />
@@ -148,6 +236,15 @@ const ArticlesDetails = () => {
         </ul>
       </div>
       <hr />
+      <div className="col-xs-12 col-md-6 offset-md-3">
+        {userToken &&
+          articlesDetails.author &&
+          currentUser.id === articlesDetails.author.id && (
+            <div className="edit-delete-buttons">
+              <button onClick={handleEditArticle}>Edit</button>
+            </div>
+          )}
+      </div>
       <div className="col-xs-12 col-md-6 offset-md-3">
         <div className="comment-form" style={{ border: "1px solid #e5e5e5" }}>
           <textarea

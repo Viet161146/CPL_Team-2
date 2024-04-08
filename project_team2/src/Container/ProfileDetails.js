@@ -10,11 +10,16 @@ const DetailsProfile = () => {
   const { username } = useParams();
   const nav = useNavigate();
 
+  // Token cố định cho user "team2"
+  const userToken =
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA";
+
   useEffect(() => {
     const fetchProfileDetails = async () => {
       try {
         const response = await axios.get(
-          `https://api.realworld.io/api/profiles/${username}`
+          `https://api.realworld.io/api/profiles/${username}`,
+          { headers: { Authorization: userToken } }
         );
         if (response.data && response.data.profile) {
           setProfileDetails(response.data.profile);
@@ -29,7 +34,8 @@ const DetailsProfile = () => {
     const fetchUserArticles = async () => {
       try {
         const response = await axios.get(
-          `https://api.realworld.io/api/articles?author=${username}`
+          `https://api.realworld.io/api/articles?author=${username}`,
+          { headers: { Authorization: userToken } }
         );
         if (response.data && response.data.articles) {
           setUserArticles(response.data.articles);
@@ -43,7 +49,8 @@ const DetailsProfile = () => {
 
     fetchProfileDetails();
     fetchUserArticles();
-  }, [username]);
+  }, [username, userToken]); // Thêm userToken vào dependency array để useEffect re-run khi token thay đổi
+
   const handleArticleClick = (slug) => {
     nav(`/articles/${slug}`);
   };
@@ -78,18 +85,33 @@ const DetailsProfile = () => {
         >
           {profileDetails.username}
         </p>
-        <button
+        {profileDetails.username === "team2" ? (
+          <button
             style={{
-              fontSize:'14px',
-              color:'#999999',
-              backgroundColor:'#FFFFFF',
-              border:'solid 1px #999999',
-              borderRadius:'5px'
+              fontSize: "14px",
+              color: "#999999",
+              backgroundColor: "#FFFFFF",
+              border: "solid 1px #999999",
+              borderRadius: "5px",
+            }}
+          >
+            <IoMdAddCircle />
+            &nbsp; Edit Profile Settings
+          </button>
+        ) : (
+          <button
+            style={{
+              fontSize: "14px",
+              color: "#999999",
+              backgroundColor: "#FFFFFF",
+              border: "solid 1px #999999",
+              borderRadius: "5px",
             }}
           >
             <IoMdAddCircle />
             &nbsp; Follow {profileDetails.username}
           </button>
+        )}
       </div>
       <br />
       <div className="container" style={{ width: "70%" }}>
@@ -104,23 +126,25 @@ const DetailsProfile = () => {
           >
             My Articles
           </a>
-          
         </div>
-<br />
+        <br />
         <div>
           {userArticles.map((article, index) => (
             <div key={index}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <img
-                  style={{ borderRadius: "50%", marginRight: "5px" }}
+                  style={{
+                    borderRadius: "50%",
+                    marginRight: "5px",
+                    width: "32px",
+                  }}
                   src={article.author.image}
                   alt="avt"
                 />
                 <span className="author-name">
-                  <span style={{ color: "#5cb85c", cursor:'pointer' }}>
+                  <span style={{ color: "#5cb85c", cursor: "pointer" }}>
                     {article.author.username}
                   </span>
-
                   <br />
                   <span
                     className="date"
@@ -182,7 +206,6 @@ const DetailsProfile = () => {
           ))}
         </div>
       </div>
-      
     </div>
   );
 };

@@ -11,6 +11,7 @@ const Home = () => {
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null); // State lưu trữ tag được chọn
   const [globalFeedData, setGlobalFeedData] = useState([]); // Biến tạm thời lưu trữ dữ liệu global feed
+  const [liked, setLiked] = useState(false);
 
   const nav = useNavigate();
 
@@ -24,14 +25,19 @@ const Home = () => {
           response = await axios.get(
             `https://api.realworld.io/api/articles?limit=100&offset=${
               (page - 1) * 1000
-            }`
+            }`,
+            {
+              headers: {
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA"
+              }
+            }
           );
           if (response.data && Array.isArray(response.data.articles)) {
             allArticles = [...allArticles, ...response.data.articles];
             page++;
           }
         } while (response.data.articles.length > 0);
-
+  
         setArticles(allArticles);
         setGlobalFeedData(allArticles);
       } catch (error) {
@@ -40,11 +46,16 @@ const Home = () => {
     };
     fetchArticles();
   }, []);
+  
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axios.get("https://api.realworld.io/api/tags");
+        const response = await axios.get("https://api.realworld.io/api/tags", {
+          headers: {
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA"
+          }
+        });
         if (response.data && Array.isArray(response.data.tags)) {
           setTags(response.data.tags);
         } else {
@@ -56,6 +67,7 @@ const Home = () => {
     };
     fetchTags();
   }, []);
+  
 
   const handleArticleClick = (slug) => {
     nav(`/articles/${slug}`);
@@ -79,6 +91,34 @@ const Home = () => {
     setArticles(globalFeedData); // Reset lại danh sách bài viết về ban đầu
   }
 
+  const handleLike = () => {
+    setLiked(!liked);
+    // Điều chỉnh số lượt thích ở cả hai mảng articles và globalFeedData
+    const updatedArticles = articles.map((article) => {
+      if (article.slug === article.slug) {
+        return {
+          ...article,
+          favoritesCount: liked
+            ? article.favoritesCount - 1
+            : article.favoritesCount + 1,
+        };
+      }
+      return article;
+    });
+    setArticles(updatedArticles);
+    const updatedGlobalFeed = globalFeedData.map((article) => {
+      if (article.slug === article.slug) {
+        return {
+          ...article,
+          favoritesCount: liked
+            ? article.favoritesCount - 1
+            : article.favoritesCount + 1,
+        };
+      }
+      return article;
+    });
+    setGlobalFeedData(updatedGlobalFeed);
+  };
 
   return (
     <div className={style.home}>
@@ -133,7 +173,7 @@ const Home = () => {
                     <div key={index}>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img
-                          style={{ borderRadius: "50%", marginRight: "5px" }}
+                          style={{ borderRadius: "50%", marginRight: "5px", width:'32px'}}
                           src={article.author.image}
                           alt="avt"
                         />
@@ -167,6 +207,7 @@ const Home = () => {
                                   display: "flex",
                                   alignItems: "center",
                                 }}
+                                onClick={() => handleLike(article.slug)}
                               >
                                 <FontAwesomeIcon icon={faHeart} />
                                 <span
@@ -244,7 +285,7 @@ const Home = () => {
                   padding: "5px 10px 10px",
                   backgroundColor: "#f3f3f3",
                   borderRadius: "4px",
-                  width: "230px",
+                  width: "250px",
                   height: "151px",
                 }}
               >
