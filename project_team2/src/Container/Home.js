@@ -12,49 +12,49 @@ const Home = () => {
   const [selectedTag, setSelectedTag] = useState(null); // State lưu trữ tag được chọn
   const [globalFeedData, setGlobalFeedData] = useState([]); // Biến tạm thời lưu trữ dữ liệu global feed
   const [liked, setLiked] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // State lưu trữ trang hiện tại
+  const [totalPages, setTotalPages] = useState(0); // State lưu trữ tổng số trang
+  const articlesPerPage = 10; // Số bài viết trên mỗi trang
 
   const nav = useNavigate();
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        let allArticles = [];
-        let page = 1;
-        let response;
-        do {
-          response = await axios.get(
-            `https://api.realworld.io/api/articles?limit=100&offset=${
-              (page - 1) * 1000
-            }`,
-            {
-              headers: {
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA"
-              }
-            }
-          );
-          if (response.data && Array.isArray(response.data.articles)) {
-            allArticles = [...allArticles, ...response.data.articles];
-            page++;
+        const response = await axios.get(
+          `https://api.realworld.io/api/articles?limit=${articlesPerPage}&offset=${
+            (currentPage - 1) * articlesPerPage
+          }`,
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA",
+            },
           }
-        } while (response.data.articles.length > 0);
-  
-        setArticles(allArticles);
-        setGlobalFeedData(allArticles);
+        );
+        if (response.data && Array.isArray(response.data.articles)) {
+          setArticles(response.data.articles);
+          setTotalPages(
+            Math.ceil(response.data.articlesCount / articlesPerPage)
+          );
+        } else {
+          console.error("Invalid response data");
+        }
       } catch (error) {
         console.error("fetch articles error", error);
       }
     };
     fetchArticles();
-  }, []);
-  
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
         const response = await axios.get("https://api.realworld.io/api/tags", {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA"
-          }
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxODE1OX0sImlhdCI6MTcxMjA0NjMyMiwiZXhwIjoxNzE3MjMwMzIyfQ.VB_sPjx8K6SPkJBr8CZaiI_-9sogz3FS1ylPZ1tg4JA",
+          },
         });
         if (response.data && Array.isArray(response.data.tags)) {
           setTags(response.data.tags);
@@ -67,35 +67,32 @@ const Home = () => {
     };
     fetchTags();
   }, []);
-  
 
   const handleArticleClick = (slug) => {
     nav(`/articles/${slug}`);
   };
 
-  const handleClickProfile=(username)=>{
-    nav(`profile/${username}`)
-  }
-  // Filter và cập nhật dữ liệu dựa trên tag đã chọn
+  const handleClickProfile = (username) => {
+    nav(`profile/${username}`);
+  };
+
   function handlePopularTags(tag) {
-    setSelectedTag(tag); // Cập nhật tag được chọn
+    setSelectedTag(tag);
     const filteredData = globalFeedData.filter((item) =>
       item.tagList.includes(tag)
     );
     setArticles(filteredData);
   }
 
-  // Reset lại danh sách bài viết về ban đầu (global feed) và giữ lại tag được chọn
   function handleGlobalFeed() {
-    setSelectedTag(null); // Reset tag được chọn
-    setArticles(globalFeedData); // Reset lại danh sách bài viết về ban đầu
+    setSelectedTag(null);
+    setArticles(globalFeedData);
   }
 
-  const handleLike = () => {
+  const handleLike = (slug) => {
     setLiked(!liked);
-    // Điều chỉnh số lượt thích ở cả hai mảng articles và globalFeedData
     const updatedArticles = articles.map((article) => {
-      if (article.slug === article.slug) {
+      if (article.slug === slug) {
         return {
           ...article,
           favoritesCount: liked
@@ -107,7 +104,7 @@ const Home = () => {
     });
     setArticles(updatedArticles);
     const updatedGlobalFeed = globalFeedData.map((article) => {
-      if (article.slug === article.slug) {
+      if (article.slug === slug) {
         return {
           ...article,
           favoritesCount: liked
@@ -118,6 +115,10 @@ const Home = () => {
       return article;
     });
     setGlobalFeedData(updatedGlobalFeed);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -149,6 +150,7 @@ const Home = () => {
                         >
                           Global Feed
                         </a>
+
                         {selectedTag && (
                           <>
                             <a
@@ -173,24 +175,41 @@ const Home = () => {
                     <div key={index}>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img
-                          style={{ borderRadius: "50%", marginRight: "5px", width:'32px'}}
+                          style={{
+                            borderRadius: "50%",
+                            marginRight: "5px",
+                            width: "32px",
+                          }}
                           src={article.author.image}
                           alt="avt"
                         />
                         <div
-                          style={{ display: "flex", flexDirection: "column" }}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
                         >
                           <div className="row">
                             <div className="col-md-9">
                               <span className="author-name">
-                                <span style={{ color: "#5cb85c", cursor:"pointer"}}  onClick={()=>handleClickProfile(article.author?.username)}>
+                                <span
+                                  style={{
+                                    color: "#5cb85c",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    handleClickProfile(article.author?.username)
+                                  }
+                                >
                                   {article.author.username}
-                                </span> 
-
+                                </span>
                                 <br />
                                 <span
                                   className="date"
-                                  style={{ fontSize: "70%", color: "#BBBBBB" }}
+                                  style={{
+                                    fontSize: "70%",
+                                    color: "#BBBBBB",
+                                  }}
                                 >
                                   {moment(article.createdAt).format(
                                     "MMMM D, YYYY"
@@ -228,10 +247,20 @@ const Home = () => {
                         onClick={() => handleArticleClick(article.slug)}
                       >
                         <h3> {article.title}</h3>
-                        <p style={{ color: "#BBBBBB", fontSize: "80%" }}>
+                        <p
+                          style={{
+                            color: "#BBBBBB",
+                            fontSize: "80%",
+                          }}
+                        >
                           {article.description}
                         </p>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
                           <span
                             style={{
                               marginRight: "10px",
@@ -326,6 +355,26 @@ const Home = () => {
           </div>
         </div>
       </div>
+      {/* Pagination */}
+      <nav aria-label="Page navigation">
+        <ul className="pagination justify-content-center">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <li
+              key={index}
+              className={`page-item ${
+                currentPage === index + 1 ? "active" : ""
+              }`}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 };
