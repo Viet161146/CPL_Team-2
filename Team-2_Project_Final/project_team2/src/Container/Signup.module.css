@@ -1,0 +1,55 @@
+/* Signup.module.css */
+
+/* Container của form đăng ký */
+.signup-container {
+    width: 400px; /* Độ rộng của container */
+    margin: 0 auto; /* Canh giữa container */
+    padding: 20px; /* Padding cho container */
+    border-radius: 5px; /* Bo góc */
+    background-color: #fff; /* Màu nền */
+}
+
+/* Tiêu đề "Đăng ký" */
+.signup-container h2 {
+    margin-bottom: 20px; /* Khoảng cách dưới */
+    text-align: center; /* Căn giữa */
+}
+
+/* Form đăng ký */
+.signup-container form {
+    display: flex; /* Hiển thị theo chiều ngang */
+    flex-direction: column; /* Chiều ngang là dọc */
+}
+
+/* Input email và mật khẩu */
+.signup-container input[type="email"],
+.signup-container input[type="password"] {
+    margin-bottom: 10px; /* Khoảng cách dưới */
+    padding: 10px; /* Padding cho input */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo góc */
+    width: calc(100% - 20px); /* Độ dài mong muốn, trừ đi 20px để đảm bảo không bị tràn ra ngoài container */
+}
+
+/* Nút Đăng ký */
+.signup-container button {
+    padding: 5px 10px; /* Padding cho nút */
+    background-color: #5cb85c; /* Màu nền */
+    color: #fff; /* Màu chữ */
+    border: none; /* Không có đường viền */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ khi di chuột qua */
+    position: absolute; /* Vị trí tuyệt đối */
+    bottom: 0; /* Dính vào góc dưới của container */
+    right: 0; /* Dính vào góc phải của container */
+    transform: translate(-50%, 50%); /* Di chuyển nút đến góc dưới bên phải của input */
+}
+
+/* Thông báo lỗi */
+.error-message {
+    color: rgb(150, 31, 31); /* Màu chữ đỏ */
+    margin-top: 20px; /* Khoảng cách trên, giảm margin để di chuyển lên trên input */
+    display: none;
+    padding-left: 5px; /* Khoảng cách giữa input và thông báo lỗi */
+    margin-left: 10px; /* Khoảng cách bên trái, sử dụng margin để di chuyển về bên trái input */
+}

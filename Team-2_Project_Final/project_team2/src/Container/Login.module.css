@@ -1,0 +1,122 @@
+/* Login.module.css */
+
+/* Container của form đăng nhập */
+.login-container {
+    width: 400px; /* Độ rộng của container */
+    margin: 0 auto; /* Canh giữa container */
+    padding: 20px; /* Padding cho container */
+    border-radius: 5px; /* Bo góc */
+    background-color: #fff; /* Màu nền */
+  }
+  
+  /* Tiêu đề "Đăng nhập" */
+  .login-container h2 {
+    margin-bottom: 20px; /* Khoảng cách dưới */
+    text-align: center; /* Căn giữa */
+  }
+  
+  /* Form đăng nhập */
+  .login-container form {
+    display: flex; /* Hiển thị theo chiều ngang */
+    flex-direction: column; /* Chiều ngang là dọc */
+  }
+  
+  /* Input tên đăng nhập và mật khẩu */
+ /* Login.module.css */
+
+/* Input tên đăng nhập và mật khẩu */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  margin-bottom: 10px; /* Khoảng cách dưới */
+  padding: 10px; /* Padding cho input */
+  border: 1px solid #ccc; /* Đường viền */
+  border-radius: 5px; /* Bo góc */
+  width: 100%; /* Độ rộng 100% của parent container */
+}
+
+/* Login.module.css */
+
+/* Login.module.css */
+
+/* Container của form đăng nhập */
+.login-container {
+    position: relative; /* Đặt vị trí tương đối cho container */
+  }
+  
+  /* Login.module.css */
+
+/* Container của form đăng nhập */
+.login-container {
+    position: relative; /* Đặt vị trí tương đối cho container */
+  }
+  
+  /* Input tên đăng nhập và mật khẩu */
+  .login-container input[type="text"],
+  .login-container input[type="password"] {
+    margin-bottom: 10px; /* Khoảng cách dưới */
+    padding: 10px; /* Padding cho input */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo góc */
+    width: calc(100% - 20px); /* Độ dài mong muốn, trừ đi 20px để đảm bảo không bị tràn ra ngoài container */
+  }
+  
+  /* Nút Đăng nhập */
+  .login-container button {
+    padding: 5px 10px; /* Padding cho nút */
+    background-color: #5cb85c; /* Màu nền */
+    color: #fff; /* Màu chữ */
+    border: none; /* Không có đường viền */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ khi di chuột qua */
+    position: absolute; /* Vị trí tuyệt đối */
+    bottom: 0; /* Dính vào góc dưới của container */
+    right: 0; /* Dính vào góc phải của container */
+    transform: translate(-50%, 50%); /* Di chuyển nút đến góc dưới bên phải của input */
+  }
+  
+  /* Thông báo lỗi */
+  .error-message {
+    color: rgb(150, 31, 31); /* Màu chữ đỏ */
+    margin-top: 20px; /* Khoảng cách trên, giảm margin để di chuyển lên trên input */
+    display: none;
+    padding-left: 5px; /* Khoảng cách giữa input và thông báo lỗi */margin-left: 10px; /* Khoảng cách bên trái, sử dụng margin để di chuyển về bên trái input */
+  }
+  
+
+
+
+  /* Login.module.css */
+
+/* Container của form đăng nhập */
+.login-container {
+    position: relative; /* Đặt vị trí tương đối cho container */
+  }
+  
+ /* Login.module.css */
+
+/* Phần "Need an account?" */
+/* Login.module.css */
+
+/* Phần "Need an account?" */
+.need-account {
+    font-size: 15px; /* Cỡ chữ nhỏ */
+    color: rgb(62, 199, 112); /* Màu chữ xanh */
+    position: absolute; /* Vị trí tuyệt đối */
+    bottom: calc(100% + 5px); /* Cách dưới 5px so với phần tử trên (input email) */
+    right: -120px; /* Di chuyển phần tử sang phải 20px */
+    cursor: pointer; /* Con trỏ khi di chuột qua */
+    transition: color 0.3s; /* Hiệu ứng màu chữ */
+  }
+  
+  /* Hiệu ứng màu chữ khi di chuột qua */
+ 
+  
+  /* Lớp để đặt phần tử trên input email */
+  .above-input {
+    position: relative; /* Đặt vị trí tương đối để vị trí tuyệt đối có thể được tính toán dựa trên phần tử cha */
+  }
+  
+  .error {
+    color: rgb(125, 18, 18);
+    font-size: smaller; /* or any other font size you prefer */
+}

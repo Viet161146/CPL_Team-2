@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  background-color: #fff;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+.header a {
+  text-decoration: none;
+}
+.left {
+  margin-left: 10%;
+  font-weight: 900;
+}
+
+.left a {
+  color: #5cb85c;
+}
+.right a {
+  color: rgba(0, 0, 0, 0.3);
+  
+}
+.right a:hover {
+  color: #fefefe;
+}
+.right ul {
+  display: flex;
+}
+
+.right li {
+  margin-top: 10px;
+  list-style-type: none;
+  margin-right: 20px;
+}
